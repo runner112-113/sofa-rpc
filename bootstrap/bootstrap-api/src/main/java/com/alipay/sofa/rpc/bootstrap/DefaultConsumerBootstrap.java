@@ -111,6 +111,7 @@ public class DefaultConsumerBootstrap<T> extends ConsumerBootstrap<T> {
             if (proxyIns != null) {
                 return proxyIns;
             }
+            // protocol + "://" + this.getInterfaceId() + ":" + uniqueId;
             String key = consumerConfig.buildKey();
             String appName = consumerConfig.getAppName();
             // 检查参数
@@ -143,7 +144,7 @@ public class DefaultConsumerBootstrap<T> extends ConsumerBootstrap<T> {
             }
 
             try {
-                // build cluster
+                // build cluster  默认是FailoverCluster
                 cluster = ClusterFactory.getCluster(this);
                 // build listeners
                 consumerConfig.setConfigListener(buildConfigListener(this));

@@ -56,10 +56,12 @@ public class FailoverCluster extends AbstractCluster {
     @Override
     public SofaResponse doInvoke(SofaRequest request) throws SofaRpcException {
         String methodName = request.getMethodName();
+        // 重试次数
         int retries = consumerConfig.getMethodRetries(methodName);
         int time = 0;
         // 异常日志
         SofaRpcException throwable = null;
+        // 记录每次的请求的服务提供者信息
         List<ProviderInfo> invokedProviderInfos = new ArrayList<ProviderInfo>(retries + 1);
         do {
             ProviderInfo providerInfo = null;

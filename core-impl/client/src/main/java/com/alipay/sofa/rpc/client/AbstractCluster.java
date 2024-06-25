@@ -397,6 +397,7 @@ public abstract class AbstractCluster extends Cluster {
         // R1：Record routing address time
         // 原始服务列表数据 --> 路由结果
         long routerStartTime = System.nanoTime();
+        // 找到所有的ProviderInfo
         List<ProviderInfo> providerInfos = routerChain.route(message, null);
         RpcInternalContext context = RpcInternalContext.peekContext();
         RpcInvokeContext rpcInvokeContext = RpcInvokeContext.getContext();
@@ -411,6 +412,7 @@ public abstract class AbstractCluster extends Cluster {
              * 注册中心如果没有provider可用列表，需要识别上下文中是否存在直连Provider:
              * 1. RpcInvokeContext.getContext().getTargetUrl()
              */
+            // 如果用户指定可调用地址 直接返回
             if (context != null) {
                 String targetIP = (String) context.getAttachment(RpcConstants.HIDDEN_KEY_PINPOINT);
                 if (StringUtils.isNotBlank(targetIP)) {
@@ -455,6 +457,7 @@ public abstract class AbstractCluster extends Cluster {
                 providerInfo = loadBalancer.select(message, providerInfos);
                 rpcInvokeContext.put(RpcConstants.INTERNAL_KEY_CLIENT_BALANCER_TIME_NANO, System.nanoTime()-loadBalanceStartTime);
 
+                // 获取ClientTransport
                 ClientTransport transport = selectByProvider(message, providerInfo);
                 if (transport != null) {
                     return providerInfo;
